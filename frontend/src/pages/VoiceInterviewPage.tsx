@@ -393,6 +393,7 @@ export default function VoiceInterviewPage() {
         setAiAudio(audioData);
         setAiText(normalized);
         setAiSpeaking(true);
+        //看门狗机制
         const durationMs = estimateWavDurationMs(audioData);
         audioPlaybackWatchdogRef.current = setTimeout(
           finishAiPlayback,

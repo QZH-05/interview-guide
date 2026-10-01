@@ -43,13 +43,6 @@ InterviewGuide 是一个集成了简历分析、模拟面试（文字 + 语音�
 | WebSocket             | -     | 语音面试实时双向通信          |
 | Gradle                | 8.14  | 构建工具                      |
 
-技术选型常见问题解答：
-
-1. 数据存储为什么选择 PostgreSQL + pgvector？PG 的向量数据存储功能够用了，精简架构，不想引入太多组件。
-2. 为什么引入 Redis？
-   - Redis 替代 `ConcurrentHashMap` 实现面试会话的缓存。
-   - 基于 Redis Stream 实现简历分析、知识库向量化等场景的异步（还能解耦，分析和向量化可以使用其他编程语言来做）。不使用 [Kafka](https://javaguide.cn/high-performance/message-queue/kafka-questions-01.html) 这类成熟的消息队列，也是不想引入太多组件。
-3. 构建工具为什么选择 Gradle？个人更喜欢用 Gradle，也写过相关的文章：[Gradle核心概念总结](https://javaguide.cn/tools/gradle/gradle-core-concepts.html)。
 
 ### 前端技术
 
@@ -269,7 +262,7 @@ interview-guide/
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/Snailclimb/interview-guide.git
+git clone https://github.com/QZH-05/interview-guide.git
 cd interview-guide
 ```
 
@@ -506,10 +499,4 @@ $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 
 在 PowerShell 中建议使用 `.\gradlew.bat :app:bootRun`（或仓库根目录的 `.\gradlew.bat`），避免与执行策略、路径解析相关的问题。
 
-## 贡献
 
-欢迎提交 Issue 和 Pull Request！
-
-## 许可证
-
-AGPL-3.0 License（只要通过网络提供服务，就必须向用户公开修改后的源码）
