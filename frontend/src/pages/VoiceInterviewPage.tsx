@@ -13,6 +13,33 @@ import {
   VoiceInterviewWebSocket,
 } from '../api/voiceInterview';
 
+/**
+ * 生成 WebSocket 地址。
+ * 生产环境通过 nginx 同源访问，必须基于当前页面地址，
+ * 不能写死 localhost（远端浏览器会连到客户端自己）。
+ */
+function resolveWsUrl(raw: string | undefined, sessionId: number): string {
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const fallback = `${protocol}//${window.location.host}/ws/voice-interview/${sessionId}`;
+  if (!raw) return fallback;
+
+  // 兼容后端旧值：ws://localhost:8080/ws/...
+  if (raw.startsWith('ws://') || raw.startsWith('wss://')) {
+    try {
+      const url = new URL(raw);
+      if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+        return `${protocol}//${window.location.host}${url.pathname}`;
+      }
+      return raw;
+    } catch {
+      return fallback;
+    }
+  }
+
+  // 后端返回相对路径：/ws/voice-interview/1
+  return `${protocol}//${window.location.host}${raw.startsWith('/') ? '' : '/'}${raw}`;
+}
+
 type VoiceConfig = {
   skillId: string;
   difficulty?: string;
@@ -544,7 +571,7 @@ export default function VoiceInterviewPage() {
       setSessionId(session.sessionId);
       setCurrentPhase(session.currentPhase);
 
-      const wsUrl = session.webSocketUrl || `ws://localhost:8080/ws/voice-interview/${session.sessionId}`;
+      const wsUrl = resolveWsUrl(session.webSocketUrl, session.sessionId);
       connectWithHandlers(session.sessionId, wsUrl);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '创建面试会话失败，请重试';
@@ -605,7 +632,7 @@ export default function VoiceInterviewPage() {
       }
       setMessages(restored);
 
-      const wsUrl = session.webSocketUrl || `ws://localhost:8080/ws/voice-interview/${session.sessionId}`;
+      const wsUrl = resolveWsUrl(session.webSocketUrl, session.sessionId);
       connectWithHandlers(session.sessionId, wsUrl);
     } catch (error) {
       setError(error instanceof Error ? error.message : '恢复会话失败');
