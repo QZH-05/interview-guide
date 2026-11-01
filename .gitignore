@@ -13,7 +13,6 @@ test-output.txt
 qodana.yaml
 
 app/src/main/resources/application-dev.yml
-/docs
 SETUP_API_KEYS.md
 
 # AI Assistant documentation
@@ -24,3 +23,6 @@ GEMINI.md
 .playwright-mcp/
 /.agents
 skills-lock.json
+
+# Office temporary lock files
+~$*
